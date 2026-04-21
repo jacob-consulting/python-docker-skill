@@ -144,7 +144,7 @@ wheels = [
 [[package]]
 name = "django-crud-views"
 version = "0.3.10"
-source = { editable = "submodules/django-crud-views" }
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "crispy-bootstrap5" },
     { name = "django" },
@@ -157,40 +157,10 @@ dependencies = [
     { name = "python-box" },
     { name = "typing-extensions" },
 ]
-
-[package.metadata]
-requires-dist = [
-    { name = "bump-my-version", marker = "extra == 'dev'" },
-    { name = "crispy-bootstrap5", specifier = ">=2023.10" },
-    { name = "django", specifier = ">=4.2.0,<6" },
-    { name = "django-bootstrap5", specifier = ">=21.3" },
-    { name = "django-crispy-forms", specifier = ">=2.0" },
-    { name = "django-crud-views", extras = ["workflow", "polymorphic", "ordered"], marker = "extra == 'all'" },
-    { name = "django-filter", specifier = ">=21.1" },
-    { name = "django-fsm-2", marker = "extra == 'workflow'", specifier = ">=4.0.0" },
-    { name = "django-fsm-2-admin", marker = "extra == 'workflow'", specifier = ">=2.0.1" },
-    { name = "django-object-detail", specifier = ">=0.1.7" },
-    { name = "django-ordered-model", marker = "extra == 'ordered'", specifier = ">=3.4.3" },
-    { name = "django-polymorphic", marker = "extra == 'polymorphic'", specifier = ">=3.1.0" },
-    { name = "django-tables2", specifier = ">=2.5.3" },
-    { name = "lxml", marker = "extra == 'test'" },
-    { name = "mkdocs", marker = "extra == 'dev'", specifier = ">=1.6.1" },
-    { name = "mkdocs-awesome-pages-plugin", marker = "extra == 'dev'", specifier = ">=2.10.1" },
-    { name = "mkdocs-get-deps", marker = "extra == 'dev'", specifier = ">=0.2.0" },
-    { name = "nox", marker = "extra == 'test'" },
-    { name = "pre-commit", marker = "extra == 'dev'" },
-    { name = "pydantic", specifier = ">=2.2.1" },
-    { name = "pytest", marker = "extra == 'test'" },
-    { name = "pytest-cov", marker = "extra == 'test'" },
-    { name = "pytest-django", marker = "extra == 'test'" },
-    { name = "pytest-mock", marker = "extra == 'test'" },
-    { name = "pytest-random-order", marker = "extra == 'test'" },
-    { name = "pytest-xdist", marker = "extra == 'test'" },
-    { name = "python-box", specifier = ">=6.0.2" },
-    { name = "ruff", marker = "extra == 'dev'" },
-    { name = "typing-extensions", specifier = ">=4.7.1" },
+sdist = { url = "https://files.pythonhosted.org/packages/10/1a/546ff6e17e2f28d77a25dacaf756e9b70a20c7979980e51fdb769b50a50b/django_crud_views-0.3.10.tar.gz", hash = "sha256:2c87dc915997254d6ddfcf297e71793d6094a8d9ba460a22492b40ccc69e0b44", size = 606020, upload-time = "2026-04-09T16:04:29.888Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/28/b9/6d7392741bf312fedc0d5cbb93cfa986b9e98a0eb9d30e56b0bd778b16c2/django_crud_views-0.3.10-py3-none-any.whl", hash = "sha256:94494656ff79ed72a145cdd59c346d39e7e7ca2ed8d79b3589bcaa9dfca20ba0", size = 114522, upload-time = "2026-04-09T16:04:28.567Z" },
 ]
-provides-extras = ["workflow", "polymorphic", "ordered", "all", "dev", "test"]
 
 [[package]]
 name = "django-debug-toolbar"
@@ -268,7 +238,7 @@ test = [
 [package.metadata]
 requires-dist = [
     { name = "django", specifier = "<=6.0" },
-    { name = "django-crud-views", editable = "submodules/django-crud-views" },
+    { name = "django-crud-views" },
     { name = "django-ordered-model" },
 ]
 

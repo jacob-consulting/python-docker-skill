@@ -25,8 +25,5 @@ test = [
 [tool.uv]
 
 [tool.uv.sources]
-# prod
-# django-crud-views = {git = "https://github.com/jacob-consulting/django-crud-views.git"}
-
-# development
-django-crud-views = { path = "./submodules/django-crud-views", editable = true }
+# enable for development of django-crud-views package as submodule
+# django-crud-views = { path = "./submodules/django-crud-views", editable = true }

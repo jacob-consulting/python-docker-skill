@@ -17,6 +17,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "ordered_model",
     "django_tables2",
+    "django_object_detail",
     "crud_views_plain.apps.CrudViewsPlainConfig",
     "crud_views.apps.CrudViewsConfig",
     "demo.apps.DemoConfig",

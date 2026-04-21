@@ -16,7 +16,7 @@ tasks:
     cmds:
       - "{{ .MANAGE }} collectstatic --no-input"
 
-  createsuperuser:
+  superuser:
     cmds:
       - "DJANGO_SUPERUSER_PASSWORD=foobar4711 {{ .MANAGE }} createsuperuser --username admin --email admin@example.com --noinput"
     ignore_error: true

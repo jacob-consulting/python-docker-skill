@@ -73,12 +73,10 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 #
 FROM deps-prod AS prod
 
-COPY --parents manage.py project src submodules $APP_DIR/
+COPY . $APP_DIR
 RUN --mount=type=cache,target=/root/.cache/uv \
-    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
-    --mount=type=bind,source=uv.lock,target=uv.lock \
-    uv sync --locked --no-dev
-RUN chown -R "${APP_USER}:${APP_USER}" $APP_DIR
+    uv sync --locked --no-dev && \
+    chown -R "${APP_USER}:${APP_USER}" $APP_DIR
 USER ${APP_USER}
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
 
@@ -87,11 +85,8 @@ CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
 #
 FROM deps-test AS test
 
-COPY --parents manage.py project src submodules $APP_DIR/
-
+COPY . $APP_DIR
 RUN --mount=type=cache,target=/root/.cache/uv \
-    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
-    --mount=type=bind,source=uv.lock,target=uv.lock \
     uv sync --locked --no-default-groups --group test
 RUN chown -R "${APP_USER}:${APP_USER}" $APP_DIR
 USER ${APP_USER}
