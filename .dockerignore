@@ -4,6 +4,7 @@
 .git
 .gitmodules
 .dockerignore
+README.md
 Dockerfile
 docker-compose.yml
 /docs
