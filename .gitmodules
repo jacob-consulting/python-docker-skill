@@ -1,0 +1,3 @@
+[submodule "submodules/django-crud-views"]
+	path = submodules/django-crud-views
+	url = git@github.com:jacob-consulting/django-crud-views.git
