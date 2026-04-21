@@ -18,14 +18,16 @@ RUN groupadd --system --gid "${APP_GID}" "${APP_USER}" \
              --create-home --shell /usr/sbin/nologin "${APP_USER}"
 
 ARG APP_DIR=/opt/project
+ARG VIRTUAL_ENV=/opt/venv
 
 # uv behaviour we want in images
 ENV UV_COMPILE_BYTECODE=1 \
     UV_LINK_MODE=copy \
     UV_PYTHON_DOWNLOADS=never \
-    UV_PROJECT_ENVIRONMENT=$APP_DIR/.venv \
-    VIRTUAL_ENV=$APP_DIR/.venv \
-    PATH=$APP_DIR/.venv/bin:$PATH
+    UV_PROJECT_ENVIRONMENT=$VIRTUAL_ENV \
+    VIRTUAL_ENV=$VIRTUAL_ENV \
+    PATH=$VIRTUAL_ENV/bin:$PATH \
+    PYTHONPATH=$APP_DIR/src
 
 WORKDIR $APP_DIR
 
@@ -39,10 +41,11 @@ RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --locked --no-install-project --no-dev
 
 COPY . $APP_DIR
+
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --locked --no-dev && \
     chown -R "${APP_USER}:${APP_USER}" $APP_DIR
 
 # switch to app user
 USER ${APP_USER}
-CMD ["python", "-m", "your_app"]
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
