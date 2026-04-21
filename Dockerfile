@@ -40,11 +40,17 @@ RUN --mount=type=cache,target=/root/.cache/uv \
     uv venv "$VIRTUAL_ENV" && \
     uv sync --locked --no-install-project --no-dev
 
-COPY . $APP_DIR
+# COPY project src submodules manage.py uv.lock pyproject.toml $APP_DIR/
+COPY manage.py $APP_DIR/manage.py
+COPY project $APP_DIR/project
+COPY src $APP_DIR/src
+COPY submodules $APP_DIR/submodules
 
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --locked --no-dev && \
-    chown -R "${APP_USER}:${APP_USER}" $APP_DIR
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    uv sync --locked --no-dev
+RUN chown -R "${APP_USER}:${APP_USER}" $APP_DIR
 
 # switch to app user
 USER ${APP_USER}

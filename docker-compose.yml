@@ -12,4 +12,3 @@ services:
       - ./project:/opt/project/project
       - ./src:/opt/project/src
       - ./db.sqlite3:/opt/project/db.sqlite3
-
