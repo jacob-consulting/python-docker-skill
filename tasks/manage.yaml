@@ -1,0 +1,22 @@
+version: '3'
+
+vars:
+  MANAGE: docker compose run --rm app python ./manage.py
+tasks:
+
+  migrate:
+    cmds:
+      - "{{ .MANAGE }} migrate"
+
+  makemigrations:
+    cmds:
+      - "{{ .MANAGE }} makemigrations"
+
+  collectstatic:
+    cmds:
+      - "{{ .MANAGE }} collectstatic --no-input"
+
+  createsuperuser:
+    cmds:
+      - "DJANGO_SUPERUSER_PASSWORD=foobar4711 {{ .MANAGE }} createsuperuser --username admin --email admin@example.com --noinput"
+    ignore_error: true

@@ -3,7 +3,7 @@ ARG UV_VERSION=0.11.7
 
 FROM ghcr.io/astral-sh/uv:$UV_VERSION AS uv
 
-FROM python:$PYTHON_VERSION-slim-bookworm
+FROM python:$PYTHON_VERSION-slim-bookworm AS base
 
 # add uv binary
 COPY --from=uv /uv /uvx /bin/
@@ -33,25 +33,84 @@ WORKDIR $APP_DIR
 
 # Install deps as root (simple cache mount), then hand $APP_DIR to the app user.
 # Splitting lockfile install from project install keeps the dep layer cached.
+
+#
+# deps-prod: runtime deps only
+#
+FROM base AS deps-prod
+
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    uv venv "$VIRTUAL_ENV" && \
+    uv sync --locked --no-install-project --no-dev
+
+#
+# deps-test: runtime + test group
+#
+FROM base AS deps-test
+
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    uv venv "$VIRTUAL_ENV" && \
+    uv sync --locked --no-install-project --no-default-groups --group test
+
+#
+# deps-dev: everything (dev + test)
+#
+FROM base AS deps-dev
+
 RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
     --mount=type=bind,source=uv.lock,target=uv.lock \
     --mount=type=bind,source=submodules,target=submodules \
     uv venv "$VIRTUAL_ENV" && \
-    uv sync --locked --no-install-project --no-dev
+    uv sync --locked --no-install-project
 
-# COPY project src submodules manage.py uv.lock pyproject.toml $APP_DIR/
-COPY manage.py $APP_DIR/manage.py
-COPY project $APP_DIR/project
-COPY src $APP_DIR/src
-COPY submodules $APP_DIR/submodules
+#
+# prod: final production image
+#
+FROM deps-prod AS prod
 
+COPY --parents manage.py project src submodules $APP_DIR/
 RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
     --mount=type=bind,source=uv.lock,target=uv.lock \
     uv sync --locked --no-dev
 RUN chown -R "${APP_USER}:${APP_USER}" $APP_DIR
+USER ${APP_USER}
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
 
-# switch to app user
+#
+# test: prod + test deps + source, runs pytest
+#
+FROM deps-test AS test
+
+COPY --parents manage.py project src submodules $APP_DIR/
+
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    uv sync --locked --no-default-groups --group test
+RUN chown -R "${APP_USER}:${APP_USER}" $APP_DIR
+USER ${APP_USER}
+CMD ["pytest", "-q"]
+
+#
+# dev: everything, source mounted at runtime
+#
+FROM deps-dev AS dev
+# Note: no COPY of src and project here — source is bind-mounted by compose.
+# We still need the project installed into the venv so imports work.
+# Copy just the metadata, install the project, then compose mounts real $APP_DIR over it.
+COPY --parents \
+     uv.lock pyproject.toml \
+     manage.py \
+     submodules \
+     $APP_DIR/
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --locked && \
+    chown -R "${APP_USER}:${APP_USER}" $APP_DIR
 USER ${APP_USER}
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

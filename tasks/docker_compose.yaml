@@ -1,0 +1,44 @@
+version: '3'
+
+tasks:
+
+  build:
+    cmds:
+      - docker compose build
+
+  bash:
+    cmds:
+      - docker compose run --rm app bash
+
+  logs:
+    cmds:
+      - docker compose logs -f app
+
+  logs-all:
+    cmds:
+      - docker compose logs -f
+
+  up:
+    cmds:
+      - docker compose up -d --remove-orphans
+
+  down:
+    cmds:
+      - docker compose down --volumes --remove-orphans
+
+  restart:
+    cmds:
+      - docker compose down --remove-orphans
+      - docker compose up -d --remove-orphans
+      - sleep 3
+      - docker compose ps
+
+  ps:
+    cmds:
+      - docker compose ps
+
+  reset-db:
+    cmds:
+      - task: down
+      - task: post-build
+
