@@ -1,3 +1,31 @@
+# settings.development.yaml – overrides applied when ENV_FOR_DYNACONF=development
+#
+# This file is safe to commit because it contains no secrets.
+# The SECRET_KEY used here is obviously fake and only suitable for local dev.
+
 debug: true
+
+# A well-known insecure key makes it obvious that this is not a real secret.
+secret_key: "django-insecure-dev-only-do-not-use-in-production"
+
+# Accept any hostname in development so Docker, ngrok tunnels, etc. work.
 allowed_hosts:
   - "*"
+
+# Verbose logging to the console so developers see all SQL queries and errors
+logging:
+  version: 1
+  disable_existing_loggers: false
+  handlers:
+    console:
+      class: "logging.StreamHandler"
+  root:
+    handlers:
+      - "console"
+    level: "DEBUG"
+  loggers:
+    django.db.backends:
+      handlers:
+        - "console"
+      level: "DEBUG"   # log every SQL query – disable if too noisy
+      propagate: false

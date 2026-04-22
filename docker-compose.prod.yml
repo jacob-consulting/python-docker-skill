@@ -1,3 +1,14 @@
+# docker-compose.prod.yml – production deployment
+#
+# Run with:  docker compose -f docker-compose.prod.yml up -d
+#
+# REQUIRED environment variables (set in .env or the host environment):
+#   DJANGO_SECRET_KEY  – long random string; never commit to version control
+#
+# OPTIONAL overrides:
+#   IMAGE_TAG           – image tag to deploy (default: latest)
+#   DJANGO_ALLOWED_HOSTS – comma-separated additional hostnames
+
 services:
 
   app:
@@ -5,12 +16,30 @@ services:
       context: .
       dockerfile: Dockerfile
       target: prod
-    image: blueprint-prod:latest
+    image: ${IMAGE_NAME:-myapp}-prod:${IMAGE_TAG:-latest}
     restart: unless-stopped
     environment:
-      - ENV_FOR_DYNACONF=production
-      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY:?DJANGO_SECRET_KEY must be set for production}
+      # Dynaconf environment – loads settings.production.yaml overlay
+      ENV_FOR_DYNACONF: production
+
+      # SECRET_KEY must be supplied externally; the :? syntax makes docker
+      # compose fail fast with a clear error if it is missing.
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:?DJANGO_SECRET_KEY must be set for production}
+
+      # Additional allowed hosts beyond what settings.production.yaml lists.
+      # Leave unset if not needed.
+      DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS:-}
+
     ports:
       - "8000:8000"
+
     volumes:
+      # Persist the SQLite DB; replace with a managed DB service for real prod.
       - ./db.sqlite3:/opt/project/db.sqlite3
+
+    # Resource limits prevent a runaway process from starving the host
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 512M

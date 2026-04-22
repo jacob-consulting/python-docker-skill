@@ -1,3 +1,9 @@
+# docker-compose.yml – development environment
+#
+# Start with:  docker compose up --build
+# The source directories are bind-mounted so code changes are reflected
+# immediately without rebuilding the image.
+
 services:
 
   app:
@@ -6,11 +12,21 @@ services:
       dockerfile: Dockerfile
       target: dev
       args:
-        APP_UID: 1000
-        APP_GID: 1001
+        # Match UID/GID to the host developer so bind-mounted files are
+        # owned correctly on both sides.  Override in .env if needed.
+        APP_UID: ${UID:-1000}
+        APP_GID: ${GID:-1000}
     environment:
-      - ENV_FOR_DYNACONF=development
+      # Tells dynaconf which settings overlay to load (settings.development.yaml)
+      ENV_FOR_DYNACONF: development
     volumes:
+      # Bind-mount source so runserver hot-reloads on every file save
       - ./project:/opt/project/project
       - ./src:/opt/project/src
+      # Persist the SQLite database across container restarts
       - ./db.sqlite3:/opt/project/db.sqlite3
+    ports:
+      - "8000:8000"
+    # Keep stdin open so `docker attach` / pdb works
+    stdin_open: true
+    tty: true

@@ -1,38 +1,92 @@
 [project]
 name = "django-project-skill"
 version = "0.1.0"
-requires-python = ">=3.14"
+requires-python = ">=3.12"
+# Core runtime dependencies – installed in every image target
 dependencies = [
-    "django<=6.0",
-    "django-crud-views",
-    "django-ordered-model",
-    "dynaconf",
+    "django>=5.0,<6.0",
+    "dynaconf>=3.2",          # environment-aware settings (reads YAML overlays)
 ]
+
+# ---------------------------------------------------------------------------
+# Dependency groups
+#
+# uv uses "dependency groups" (PEP 735) rather than extras for dev/test deps.
+# Each group is only installed in the image stage that needs it:
+#   prod  → deps-prod stage  (production WSGI server)
+#   test  → deps-test stage  (pytest + plugins)
+#   dev   → deps-dev  stage  (linters, debugger; includes test group)
+# ---------------------------------------------------------------------------
 
 [dependency-groups]
+
 prod = [
-    "uwsgi",
+    # uwsgi is compiled from source in deps-prod so gcc/libpcre3-dev are
+    # available there; only libpcre3 runtime lib is needed in the prod image.
+    "uwsgi>=2.0",
 ]
-dev = [
-    { include-group = "test" },
-    "django-debug-toolbar>=4.3",
-    "ipython",
-    "ruff>=0.5",
-    "mypy>=1.10",
-]
+
 test = [
     "pytest>=8.0",
-    "pytest-django>=4.8",
-    "pytest-cov>=5.0",
+    "pytest-django>=4.8",     # Django-aware fixtures (db, client, settings, …)
+    "pytest-cov>=5.0",        # Coverage reporting
+    "factory-boy>=3.3",       # Model factories for test data
 ]
 
-[tool.uv]
+dev = [
+    # Include the test group so developers can also run tests locally
+    { include-group = "test" },
+    "django-debug-toolbar>=4.3",
+    "ipython>=8.0",
+    "ruff>=0.5",              # Linter + formatter (replaces flake8/black/isort)
+    "mypy>=1.10",
+    "django-stubs>=5.0",      # Mypy type stubs for Django
+]
 
-[tool.uv.sources]
-# enable for development of django-crud-views package as submodule
+# ---------------------------------------------------------------------------
+# uv configuration
+# ---------------------------------------------------------------------------
+
+[tool.uv]
+# Uncomment to use a local checkout of a package as an editable install:
+# [tool.uv.sources]
 # django-crud-views = { path = "./submodules/django-crud-views", editable = true }
+
+# ---------------------------------------------------------------------------
+# pytest configuration
+# ---------------------------------------------------------------------------
 
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "project.settings"
-pythonpath = ["src"]
+# Restrict test discovery to src/ so pytest doesn't recurse into submodules
+# or the project/ directory.
 testpaths = ["src"]
+pythonpath = ["src"]          # Adds src/ to sys.path so app imports resolve
+
+# ---------------------------------------------------------------------------
+# ruff configuration
+# ---------------------------------------------------------------------------
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B"]
+ignore = ["E501"]             # line length handled by formatter
+
+[tool.ruff.lint.isort]
+known-first-party = ["project"]
+
+# ---------------------------------------------------------------------------
+# mypy configuration
+# ---------------------------------------------------------------------------
+
+[tool.mypy]
+plugins = ["mypy_django_plugin.main"]
+python_version = "3.12"
+strict = true
+ignore_missing_imports = true
+
+[tool.django-stubs]
+django_settings_module = "project.settings"

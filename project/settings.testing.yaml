@@ -1,5 +1,38 @@
+# settings.testing.yaml – overrides applied when ENV_FOR_DYNACONF=testing
+#
+# Optimised for fast, deterministic test runs inside Docker.
+
 debug: false
+
+# A fixed, well-known key keeps test output deterministic across runs.
+secret_key: "django-insecure-test-fixed-key-do-not-use-elsewhere"
+
+# "testserver" is the hostname Django's test client uses internally.
 allowed_hosts:
   - "localhost"
   - "127.0.0.1"
   - "testserver"
+
+# Use an in-memory SQLite database so each test run starts with a clean slate
+# and disk I/O is eliminated.  pytest-django creates the schema automatically.
+databases:
+  default:
+    ENGINE: "django.db.backends.sqlite3"
+    NAME: ":memory:"
+
+# Disable migrations during tests for speed; Django creates tables directly
+# from model definitions instead.  Remove this if migrations must be tested.
+migration_modules: {}  # populated at runtime by --reuse-db or similar
+
+# Use the dummy cache backend so no external Redis is needed in CI.
+caches:
+  default:
+    BACKEND: "django.core.cache.backends.dummy.DummyCache"
+
+# Use the in-memory email backend so tests can inspect sent messages via
+# django.core.mail.outbox without a real SMTP server.
+email_backend: "django.core.mail.backends.locmem.EmailBackend"
+
+# Minimal password hashing in tests – MD5Hasher is ~100x faster than bcrypt.
+password_hashers:
+  - "django.contrib.auth.hashers.MD5PasswordHasher"

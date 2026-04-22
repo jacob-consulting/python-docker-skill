@@ -1,3 +1,10 @@
+# docker-compose.test.yml – CI / automated test runner
+#
+# Run with:  docker compose -f docker-compose.test.yml up --build --exit-code-from app
+#
+# The --exit-code-from flag makes compose propagate pytest's exit code to the
+# host process so CI pipelines fail correctly when tests fail.
+
 services:
 
   app:
@@ -5,7 +12,15 @@ services:
       context: .
       dockerfile: Dockerfile
       target: test
-    image: python-dockerfile-skill-test:latest
+    # Tag the image so it can be pushed to a registry after a successful test run
+    image: ${IMAGE_NAME:-myapp}-test:${IMAGE_TAG:-latest}
     environment:
-      - ENV_FOR_DYNACONF=testing
-    command: pytest --cov=src --cov-report=term-missing -q
+      # Tells dynaconf which settings overlay to load (settings.testing.yaml)
+      ENV_FOR_DYNACONF: testing
+    # Override the Dockerfile CMD to add coverage flags; adjust as needed.
+    command: >
+      pytest src/ -v --tb=short
+      --cov=src --cov-report=term-missing --cov-report=xml:/reports/coverage.xml
+    volumes:
+      # Write coverage report to the host for inspection / upload to Codecov etc.
+      - ./reports:/reports
