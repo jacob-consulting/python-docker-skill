@@ -1,5 +1,8 @@
 version: '3'
 
+env:
+  DJANGO_SECRET_KEY: "your-secret-key"
+
 tasks:
 
   build:
@@ -44,7 +47,13 @@ tasks:
 
   test:
     desc: Run tests with coverage inside the test container
-    cmd: docker compose -f docker-compose.test.yml run --rm app
+    cmds:
+      - docker compose -f docker-compose.test.yml build --no-cache
+      - docker compose -f docker-compose.test.yml run --rm app
+
+  prod-build:
+    desc: Build application in production mode
+    cmd: docker compose -f docker-compose.prod.yml build --no-cache
 
   prod-up:
     desc: Start the application in production mode (detached)
