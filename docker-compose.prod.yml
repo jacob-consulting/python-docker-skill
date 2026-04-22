@@ -7,6 +7,9 @@ services:
       target: prod
     image: blueprint-prod:latest
     restart: unless-stopped
+    environment:
+      - ENV_FOR_DYNACONF=production
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
     ports:
       - "8000:8000"
     volumes:

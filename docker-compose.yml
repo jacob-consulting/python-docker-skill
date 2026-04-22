@@ -8,7 +8,8 @@ services:
       args:
         APP_UID: 1000
         APP_GID: 1001
-    # command: python manage.py runserver 0.0.0.0:8000
+    environment:
+      - ENV_FOR_DYNACONF=development
     volumes:
       - ./project:/opt/project/project
       - ./src:/opt/project/src

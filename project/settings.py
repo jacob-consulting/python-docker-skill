@@ -1,12 +1,14 @@
 from pathlib import Path
+import os
+
+from dynaconf import DjangoDynaconf
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = "django-insecure-change-me-in-production"
-
-DEBUG = True
-
-ALLOWED_HOSTS = ["*"]
+# Placeholder — overridden by dynaconf from settings.yaml / .secrets.yaml
+SECRET_KEY = "placeholder-replaced-by-dynaconf"
+DEBUG = False
+ALLOWED_HOSTS: list[str] = []
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -83,3 +85,17 @@ LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
 
 CRUD_VIEWS_EXTENDS = "demo/crud_views.html"
+
+_env = os.environ.get("ENV_FOR_DYNACONF", "development").lower()
+
+DjangoDynaconf(
+    django_settings_module=__name__,
+    settings_files=[
+        "settings.yaml",
+        f"settings.{_env}.yaml",
+        ".secrets.yaml",
+    ],
+    envvar_prefix="DJANGO",
+    environments=False,
+    load_dotenv=False,
+)
