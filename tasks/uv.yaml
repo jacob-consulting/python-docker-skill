@@ -1,0 +1,11 @@
+version: '3'
+
+tasks:
+
+  lock:
+    desc: Lock dependencies, update uv.lock
+    cmd: uv lock
+
+  upgrade:
+    desc: Upgrade and lock dependencies, update uv.lock
+    cmd: uv lock --upgrade

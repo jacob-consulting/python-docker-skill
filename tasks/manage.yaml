@@ -2,6 +2,7 @@ version: '3'
 
 vars:
   MANAGE: docker compose run --rm app python ./manage.py
+
 tasks:
 
   migrate:

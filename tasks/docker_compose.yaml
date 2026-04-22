@@ -3,30 +3,35 @@ version: '3'
 tasks:
 
   build:
-    cmds:
-      - docker compose build
+    desc: Build the docker image(s)
+    cmd: docker compose build
+
+  build-no-cache:
+    desc: Build the docker image(s) without using the cache
+    cmd: docker compose build --no-cache
 
   bash:
-    cmds:
-      - docker compose run --rm app bash
+    desc: Run a bash shell inside the app container
+    cmd: docker compose run --rm app bash
 
   logs:
-    cmds:
-      - docker compose logs -f app
+    desc: Show logs from the app container
+    cmd: docker compose logs -f app
 
   logs-all:
-    cmds:
-      - docker compose logs -f
+    desc: Show logs from all containers
+    cmd: docker compose logs -f
 
   up:
-    cmds:
-      - docker compose up -d --remove-orphans
+    desc: Start the application in detached mode
+    cmd: docker compose up -d --remove-orphans
 
   down:
-    cmds:
-      - docker compose down --volumes --remove-orphans
+    desc: Stop and remove containers, networks, images, and volumes
+    cmd: docker compose down --volumes --remove-orphans
 
   restart:
+    desc: Restart the application
     cmds:
       - docker compose down --remove-orphans
       - docker compose up -d --remove-orphans
@@ -34,11 +39,5 @@ tasks:
       - docker compose ps
 
   ps:
-    cmds:
-      - docker compose ps
-
-  reset-db:
-    cmds:
-      - task: down
-      - task: post-build
-
+    desc: List containers
+    cmd: docker compose ps

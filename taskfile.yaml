@@ -4,7 +4,8 @@ version: '3'
 
 
 includes:
-  d: ./tasks/docker_compose.yaml
+  dc: ./tasks/docker_compose.yaml
+  uv: ./tasks/uv.yaml
   m: ./tasks/manage.yaml
 
 vars:
