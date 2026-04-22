@@ -39,6 +39,11 @@ WORKDIR $APP_DIR
 #
 FROM base AS deps-prod
 
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        gcc \
+        libpcre3-dev \
+    && rm -rf /var/lib/apt/lists/*
+
 RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
     --mount=type=bind,source=uv.lock,target=uv.lock \
@@ -78,7 +83,8 @@ RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --locked --no-dev && \
     chown -R "${APP_USER}:${APP_USER}" $APP_DIR
 USER ${APP_USER}
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+RUN python manage.py collectstatic --no-input
+CMD ["uwsgi", "--http", "0.0.0.0:8000", "--module", "project.wsgi", "--static-map", "/static/=/opt/project/staticfiles"]
 
 #
 # test: prod + test deps + source, runs pytest
