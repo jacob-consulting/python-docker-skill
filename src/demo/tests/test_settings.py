@@ -7,5 +7,9 @@ def test_allowed_hosts_does_not_contain_wildcard_in_testing():
     assert "*" not in settings.ALLOWED_HOSTS
 
 
+def test_debug_is_false_in_testing():
+    assert settings.DEBUG is False
+
+
 def test_secret_key_is_not_original_placeholder():
     assert settings.SECRET_KEY != "django-insecure-change-me-in-production"

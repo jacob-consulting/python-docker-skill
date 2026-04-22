@@ -6,7 +6,7 @@ from dynaconf import DjangoDynaconf
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Placeholder — overridden by dynaconf from settings.yaml / .secrets.yaml
-SECRET_KEY = "placeholder-replaced-by-dynaconf"
+SECRET_KEY = "django-insecure-placeholder-replaced-by-dynaconf"
 DEBUG = False
 ALLOWED_HOSTS: list[str] = []
 
@@ -86,13 +86,11 @@ LOGOUT_REDIRECT_URL = "/"
 
 CRUD_VIEWS_EXTENDS = "demo/crud_views.html"
 
-_env = os.environ.get("ENV_FOR_DYNACONF", "development").lower()
-
 DjangoDynaconf(
     django_settings_module=__name__,
     settings_files=[
         "settings.yaml",
-        f"settings.{_env}.yaml",
+        f"settings.{os.environ.get('ENV_FOR_DYNACONF', 'development').lower()}.yaml",
         ".secrets.yaml",
     ],
     envvar_prefix="DJANGO",
