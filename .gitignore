@@ -2,3 +2,4 @@
 .venv
 .claude
 db.sqlite3
+.worktrees
