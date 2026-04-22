@@ -27,7 +27,7 @@ ENV UV_COMPILE_BYTECODE=1 \
     UV_PROJECT_ENVIRONMENT=$VIRTUAL_ENV \
     VIRTUAL_ENV=$VIRTUAL_ENV \
     PATH=$VIRTUAL_ENV/bin:$PATH \
-    PYTHONPATH=$APP_DIR/src
+    PYTHONPATH=$APP_DIR:$APP_DIR/src
 
 WORKDIR $APP_DIR
 
@@ -97,7 +97,7 @@ FROM deps-test AS test
 
 COPY . $APP_DIR
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --locked --no-default-groups --group test
+    uv sync --locked --group test
 RUN chown -R "${APP_USER}:${APP_USER}" $APP_DIR
 USER ${APP_USER}
 CMD ["pytest", "-q"]
