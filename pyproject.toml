@@ -32,3 +32,4 @@ test = [
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "project.settings"
 pythonpath = ["src"]
+testpaths = ["src"]
