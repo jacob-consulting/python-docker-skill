@@ -1,0 +1,11 @@
+services:
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: prod
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./db.sqlite3:/opt/project/db.sqlite3
