@@ -5,6 +5,8 @@ services:
       context: .
       dockerfile: Dockerfile
       target: prod
+    image: blueprint-prod:latest
+    restart: unless-stopped
     ports:
       - "8000:8000"
     volumes:
