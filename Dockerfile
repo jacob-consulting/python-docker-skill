@@ -35,7 +35,7 @@ WORKDIR $APP_DIR
 # Splitting lockfile install from project install keeps the dep layer cached.
 
 #
-# deps-prod: runtime deps only
+# deps-prod: compile uwsgi and install prod deps (build tools present here, not in prod)
 #
 FROM base AS deps-prod
 
@@ -85,9 +85,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY --from=deps-prod $VIRTUAL_ENV $VIRTUAL_ENV
 
 COPY . $APP_DIR
-RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --locked --no-dev && \
-    chown -R "${APP_USER}:${APP_USER}" $APP_DIR
+RUN chown -R "${APP_USER}:${APP_USER}" $APP_DIR
 USER ${APP_USER}
 RUN python manage.py collectstatic --no-input
 CMD ["uwsgi", "--http", "0.0.0.0:8000", "--module", "project.wsgi", "--static-map", "/static/=/opt/project/staticfiles"]
