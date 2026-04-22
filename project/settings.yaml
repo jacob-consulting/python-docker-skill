@@ -1,0 +1,5 @@
+debug: false
+secret_key: "insecure-placeholder-change-in-production"
+allowed_hosts:
+  - "localhost"
+  - "127.0.0.1"

@@ -1,0 +1,3 @@
+debug: false
+allowed_hosts:
+  - "your-domain.com"  # replace with real hostname
