@@ -27,3 +27,7 @@ test = [
 [tool.uv.sources]
 # enable for development of django-crud-views package as submodule
 # django-crud-views = { path = "./submodules/django-crud-views", editable = true }
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "project.settings"
+pythonpath = ["src"]
