@@ -217,7 +217,6 @@ dependencies = [
     { name = "django" },
     { name = "django-crud-views" },
     { name = "django-ordered-model" },
-    { name = "uwsgi" },
 ]
 
 [package.dev-dependencies]
@@ -230,6 +229,9 @@ dev = [
     { name = "pytest-django" },
     { name = "ruff" },
 ]
+prod = [
+    { name = "uwsgi" },
+]
 test = [
     { name = "pytest" },
     { name = "pytest-cov" },
@@ -241,7 +243,6 @@ requires-dist = [
     { name = "django", specifier = "<=6.0" },
     { name = "django-crud-views" },
     { name = "django-ordered-model" },
-    { name = "uwsgi" },
 ]
 
 [package.metadata.requires-dev]
@@ -254,6 +255,7 @@ dev = [
     { name = "pytest-django", specifier = ">=4.8" },
     { name = "ruff", specifier = ">=0.5" },
 ]
+prod = [{ name = "uwsgi" }]
 test = [
     { name = "pytest", specifier = ">=8.0" },
     { name = "pytest-cov", specifier = ">=5.0" },

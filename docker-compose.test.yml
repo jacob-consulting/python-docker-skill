@@ -5,4 +5,5 @@ services:
       context: .
       dockerfile: Dockerfile
       target: test
+    image: python-dockerfile-skill-test:latest
     command: pytest --cov=src --cov-report=term-missing -q

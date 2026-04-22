@@ -48,7 +48,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
     --mount=type=bind,source=uv.lock,target=uv.lock \
     uv venv "$VIRTUAL_ENV" && \
-    uv sync --locked --no-install-project --no-dev
+    uv sync --locked --no-install-project --no-default-groups --group prod
 
 #
 # deps-test: runtime + test group

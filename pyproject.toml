@@ -6,10 +6,12 @@ dependencies = [
     "django<=6.0",
     "django-crud-views",
     "django-ordered-model",
-    "uwsgi",
 ]
 
 [dependency-groups]
+prod = [
+    "uwsgi",
+]
 dev = [
     { include-group = "test" },
     "django-debug-toolbar>=4.3",
