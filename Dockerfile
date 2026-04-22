@@ -76,7 +76,13 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 #
 # prod: final production image
 #
-FROM deps-prod AS prod
+FROM base AS prod
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        libpcre3 \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY --from=deps-prod $VIRTUAL_ENV $VIRTUAL_ENV
 
 COPY . $APP_DIR
 RUN --mount=type=cache,target=/root/.cache/uv \
