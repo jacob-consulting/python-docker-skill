@@ -97,7 +97,7 @@ FROM deps-test AS test
 
 COPY . $APP_DIR
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --locked --group test
+    uv sync --locked --no-default-groups --group test
 RUN chown -R "${APP_USER}:${APP_USER}" $APP_DIR
 USER ${APP_USER}
 CMD ["pytest", "-q"]
