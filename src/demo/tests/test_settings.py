@@ -12,4 +12,4 @@ def test_debug_is_false_in_testing():
 
 
 def test_secret_key_is_not_original_placeholder():
-    assert settings.SECRET_KEY != "django-insecure-change-me-in-production"
+    assert settings.SECRET_KEY != "django-insecure-placeholder-replaced-by-dynaconf"
