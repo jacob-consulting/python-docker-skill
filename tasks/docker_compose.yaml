@@ -41,3 +41,15 @@ tasks:
   ps:
     desc: List containers
     cmd: docker compose ps
+
+  test:
+    desc: Run tests with coverage inside the test container
+    cmd: docker compose -f docker-compose.test.yml run --rm app
+
+  prod-up:
+    desc: Start the application in production mode (detached)
+    cmd: docker compose -f docker-compose.prod.yml up -d --remove-orphans
+
+  prod-down:
+    desc: Stop and remove production containers
+    cmd: docker compose -f docker-compose.prod.yml down --volumes --remove-orphans
