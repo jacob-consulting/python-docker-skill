@@ -3,3 +3,6 @@
 .claude
 db.sqlite3
 .worktrees
+__pycache__/
+*.pyc
+*.pyo
