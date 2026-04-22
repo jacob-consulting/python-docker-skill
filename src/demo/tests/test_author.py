@@ -5,7 +5,6 @@ from django.urls import reverse
 from demo.models import Author
 
 
-@pytest.mark.django_db
 def test_author_str():
     author = Author(first_name="Jane", last_name="Doe")
     assert str(author) == "Jane Doe"
