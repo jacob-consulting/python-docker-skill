@@ -30,11 +30,12 @@ services:
         APP_UID: ${UID:-1000}
         APP_GID: ${GID:-1000}
     environment:
-      ENV_FOR_DYNACONF: development
+      ENV_FOR_DYNACONF: development   # omit if not using dynaconf
     volumes:
-      - ./project:/opt/project/project
       - ./src:/opt/project/src
-      - ./db.sqlite3:/opt/project/db.sqlite3
+      # Django only: also mount project/ and db.sqlite3
+      # - ./project:/opt/project/project
+      # - ./db.sqlite3:/opt/project/db.sqlite3
     ports:
       - "8000:8000"
     stdin_open: true
@@ -62,7 +63,7 @@ services:
     # and the cached dev image (missing source) is used for tests.
     image: ${IMAGE_NAME:-myapp}-test:${IMAGE_TAG:-latest}
     environment:
-      ENV_FOR_DYNACONF: testing
+      ENV_FOR_DYNACONF: testing   # omit if not using dynaconf
     command: >
       pytest src/ -v --tb=short
       --cov=src --cov-report=term-missing --cov-report=xml:/reports/coverage.xml
@@ -75,7 +76,7 @@ services:
 Without `image:`, Docker Compose generates the image name from the project directory name.
 Both `docker-compose.yml` and `docker-compose.test.yml` would produce the same name.
 The dev image (built earlier, with bind-mounts — no source baked in) would be reused for tests,
-causing `ModuleNotFoundError: No module named 'project'`.
+causing `ModuleNotFoundError`.
 
 ---
 
@@ -83,9 +84,6 @@ causing `ModuleNotFoundError: No module named 'project'`.
 
 ```yaml
 # docker-compose.prod.yml – production deployment
-#
-# REQUIRED env vars:
-#   DJANGO_SECRET_KEY – long random string; never commit to VCS
 
 services:
 
@@ -97,30 +95,33 @@ services:
     image: ${IMAGE_NAME:-myapp}-prod:${IMAGE_TAG:-latest}
     restart: unless-stopped
     environment:
-      ENV_FOR_DYNACONF: production
+      ENV_FOR_DYNACONF: production   # omit if not using dynaconf
 
-      # :? syntax makes compose fail fast with a clear error if SECRET_KEY is unset.
+      # Django only: :? syntax makes compose fail fast if SECRET_KEY is unset.
       # Bare ${DJANGO_SECRET_KEY} silently passes an empty string.
       DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:?DJANGO_SECRET_KEY must be set for production}
 
-      # Inject extra allowed hosts at runtime (comma-separated).
+      # Django only: inject extra allowed hosts at runtime (comma-separated).
       DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS:-}
 
     ports:
       - "8000:8000"
 
     volumes:
-      - ./db.sqlite3:/opt/project/db.sqlite3
+      # Django only: bind-mount SQLite for persistence
+      # - ./db.sqlite3:/opt/project/db.sqlite3
 ```
 
 ---
 
 ## ENV_FOR_DYNACONF placement
 
-Every compose file sets `ENV_FOR_DYNACONF` in `environment:`. This tells dynaconf which YAML overlay to load:
+When using dynaconf, every compose file sets `ENV_FOR_DYNACONF` in `environment:`. This tells dynaconf which YAML overlay to load:
 
 - dev → `settings.development.yaml`
 - testing → `settings.testing.yaml`
 - production → `settings.production.yaml`
 
 **Do not use `DJANGO_ENV` — dynaconf looks for `ENV_FOR_DYNACONF`.**
+
+Omit `ENV_FOR_DYNACONF` entirely if not using dynaconf.

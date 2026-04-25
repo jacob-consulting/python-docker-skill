@@ -1,6 +1,6 @@
 # Git Submodule as Editable Package
 
-Use this pattern when developing a library alongside this Django project and you want
+Use this pattern when developing a Python library alongside this project and you want
 import changes to reflect immediately without reinstalling.
 
 ## Setup Steps
@@ -26,8 +26,7 @@ Then add `my-lib` to `[project.dependencies]` so it is installed in all stages:
 
 ```toml
 dependencies = [
-    "django>=5.0,<6.0",
-    "dynaconf>=3.2",
+    # ... your existing dependencies ...
     "my-lib",               # resolved from submodules/ via uv.sources
 ]
 ```

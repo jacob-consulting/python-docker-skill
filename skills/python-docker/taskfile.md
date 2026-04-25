@@ -6,8 +6,8 @@
 taskfile.yaml          ← root (includes only, no direct tasks)
 tasks/
   docker_compose.yaml  ← dc: namespace
-  manage.yaml          ← m: namespace
   uv.yaml              ← uv: namespace
+  manage.yaml          ← m: namespace (Django only, optional)
 ```
 
 ## taskfile.yaml (root)
@@ -20,7 +20,8 @@ version: '3'
 includes:
   dc: ./tasks/docker_compose.yaml
   uv: ./tasks/uv.yaml
-  m: ./tasks/manage.yaml
+  # Django only: uncomment the line below to enable manage.py tasks
+  # m: ./tasks/manage.yaml
 
 vars:
 
@@ -150,9 +151,11 @@ task dc:down         # stop and clean up
 task dc:test         # run full test suite in container
 task dc:logs         # tail app logs
 task dc:bash         # shell into running container
-task m:migrate       # run database migrations
-task m:makemigrations
-task m:superuser     # create admin user (password: foobar4711)
 task uv:lock         # update lock file
 task uv:upgrade      # upgrade all dependencies
+
+# Django only (requires m: include in taskfile.yaml):
+task m:migrate
+task m:makemigrations
+task m:superuser     # create admin user (password: foobar4711)
 ```

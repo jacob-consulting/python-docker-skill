@@ -1,4 +1,4 @@
-# Dynaconf Settings Reference
+# Django + Dynaconf Settings Reference *(optional — Django projects only)*
 
 ## File Layout
 
