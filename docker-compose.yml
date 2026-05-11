@@ -17,7 +17,7 @@ services:
         APP_UID: ${UID:-1000}
         APP_GID: ${GID:-1000}
     environment:
-      # Tells dynaconf which settings overlay to load (settings.development.yaml)
+      # Tells dynaconf which settings overlay to load (settings/development.yaml)
       ENV_FOR_DYNACONF: development
     volumes:
       # Bind-mount source so runserver hot-reloads on every file save

@@ -13,7 +13,7 @@ A multi-stage Python Dockerfile blueprint using `uv` for dependency management a
 
 - `dockerfile.md` — complete Dockerfile (5 stages) + non-obvious decisions
 - `compose.md` — docker-compose.yml (dev), docker-compose.test.yml, docker-compose.prod.yml
-- `settings.md` — dynaconf integration in settings.py + YAML overlay files *(Django optional)*
+- `settings.md` — dynaconf integration with settings/ subdirectory, validators, and YAML-only config *(Django optional)*
 - `pyproject.md` — pyproject.toml with PEP 735 dependency groups
 - `taskfile.md` — taskfile.yaml + tasks/ directory
 - `submodules.md` — git submodule as editable package
@@ -34,7 +34,7 @@ A multi-stage Python Dockerfile blueprint using `uv` for dependency management a
 
 5. **`ENV_FOR_DYNACONF`** is the environment selector (not `DJANGO_ENV`, `DJANGO_ENVIRONMENT`, or any other name). Set it in every Compose `environment:` block.
 
-6. **dynaconf settings_files use SHORT paths** — `"settings.yaml"` not `"project/settings.yaml"`. DjangoDynaconf uses the calling `settings.py` file's directory as `root_path`, so the YAML files sit alongside `settings.py`.
+6. **dynaconf settings_file paths are relative to settings.py's directory** — `"settings/base.yaml"` not `"project/settings/base.yaml"`. DjangoDynaconf uses the calling `settings.py` file's directory as `root_path`.
 
 7. **`environments=False`** in DjangoDynaconf — YAML files are flat (no `[default]`/`[production]` sections). One file per environment.
 

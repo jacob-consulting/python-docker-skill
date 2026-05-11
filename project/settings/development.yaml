@@ -1,0 +1,25 @@
+# development.yaml – overrides applied when ENV_FOR_DYNACONF=development
+
+DEBUG: true
+
+SECRET_KEY: "django-insecure-dev-only-do-not-use-in-production"
+
+ALLOWED_HOSTS:
+  - "*"
+
+LOGGING:
+  version: 1
+  disable_existing_loggers: false
+  handlers:
+    console:
+      class: "logging.StreamHandler"
+  root:
+    handlers:
+      - "console"
+    level: "DEBUG"
+  loggers:
+    django.db.backends:
+      handlers:
+        - "console"
+      level: "DEBUG"
+      propagate: false

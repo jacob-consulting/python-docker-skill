@@ -61,7 +61,7 @@ Co-developed packages live in `submodules/`. They are registered in `[tool.uv.so
 
 ### Django + dynaconf
 
-Settings are split across per-environment YAML files (`settings.yaml`, `settings.development.yaml`, etc.) alongside `project/settings.py`. `ENV_FOR_DYNACONF` selects the active overlay — set it in every Compose `environment:` block.
+Settings live in YAML files under `project/settings/` (`base.yaml`, `development.yaml`, `testing.yaml`, `production.yaml`). `settings.py` contains only `BASE_DIR`, the `DjangoDynaconf()` hook, and validators — no Django settings in Python. `ENV_FOR_DYNACONF` selects the active overlay — set it in every Compose `environment:` block.
 
 ## Skill Files
 

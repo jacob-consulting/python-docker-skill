@@ -1,0 +1,40 @@
+# production.yaml – overrides applied when ENV_FOR_DYNACONF=production
+
+DEBUG: false
+
+ALLOWED_HOSTS:
+  - "your-domain.com"
+  - "www.your-domain.com"
+
+SECURE_SSL_REDIRECT: true
+SECURE_HSTS_SECONDS: 31536000
+SECURE_HSTS_INCLUDE_SUBDOMAINS: true
+SECURE_HSTS_PRELOAD: true
+SESSION_COOKIE_SECURE: true
+CSRF_COOKIE_SECURE: true
+
+SECURE_PROXY_SSL_HEADER:
+  - "HTTP_X_FORWARDED_PROTO"
+  - "https"
+
+LOGGING:
+  version: 1
+  disable_existing_loggers: false
+  formatters:
+    json:
+      "()": "pythonjsonlogger.jsonlogger.JsonFormatter"
+      format: "%(asctime)s %(name)s %(levelname)s %(message)s"
+  handlers:
+    console:
+      class: "logging.StreamHandler"
+      formatter: "json"
+  root:
+    handlers:
+      - "console"
+    level: "WARNING"
+  loggers:
+    django:
+      handlers:
+        - "console"
+      level: "ERROR"
+      propagate: false

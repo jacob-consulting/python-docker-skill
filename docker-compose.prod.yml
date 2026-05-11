@@ -19,14 +19,14 @@ services:
     image: ${IMAGE_NAME:-myapp}-prod:${IMAGE_TAG:-latest}
     restart: unless-stopped
     environment:
-      # Dynaconf environment – loads settings.production.yaml overlay
+      # Dynaconf environment – loads settings/production.yaml overlay
       ENV_FOR_DYNACONF: production
 
       # SECRET_KEY must be supplied externally; the :? syntax makes docker
       # compose fail fast with a clear error if it is missing.
       DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:?DJANGO_SECRET_KEY must be set for production}
 
-      # Additional allowed hosts beyond what settings.production.yaml lists.
+      # Additional allowed hosts beyond what settings/production.yaml lists.
       # Leave unset if not needed.
       DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS:-}
 

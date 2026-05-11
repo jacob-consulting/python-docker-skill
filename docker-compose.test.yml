@@ -15,7 +15,7 @@ services:
     # Tag the image so it can be pushed to a registry after a successful test run
     image: ${IMAGE_NAME:-myapp}-test:${IMAGE_TAG:-latest}
     environment:
-      # Tells dynaconf which settings overlay to load (settings.testing.yaml)
+      # Tells dynaconf which settings overlay to load (settings/testing.yaml)
       ENV_FOR_DYNACONF: testing
     # Override the Dockerfile CMD to add coverage flags; adjust as needed.
     command: >
