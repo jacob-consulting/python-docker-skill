@@ -6,6 +6,7 @@ requires-python = ">=3.12"
 dependencies = [
     "django>=5.0,<6.0",
     "dynaconf>=3.2",          # environment-aware settings (reads YAML overlays)
+    "django-crud-views[ordered]",
 ]
 
 # ---------------------------------------------------------------------------
@@ -48,9 +49,9 @@ dev = [
 # ---------------------------------------------------------------------------
 
 [tool.uv]
-# Uncomment to use a local checkout of a package as an editable install:
-# [tool.uv.sources]
-# django-crud-views = { path = "./submodules/django-crud-views", editable = true }
+
+[tool.uv.sources]
+django-crud-views = { path = "./submodules/django-crud-views", editable = true }
 
 # ---------------------------------------------------------------------------
 # pytest configuration
